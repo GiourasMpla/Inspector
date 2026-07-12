@@ -17,20 +17,35 @@ object MapManager {
                 try {
                     val jsonArray = JSONArray(message)
                     val length = jsonArray.length()
-                    for (i in 0..<length) {
+//                    for (i in 0..<length) {
+//                        val json = jsonArray.getJSONObject(i)
+//                        json.getDouble("x")
+//
+//                        //x coordinate
+//                        json.getDouble("y")
+//
+//                        //y coordinate
+//                        json.getDouble("theta")
+//
+//                        //z coordinate
+//                        json.getString("name")
+//
+//                        //position name
+//                    }
+
+                    for (i in 0 until length) {
+
                         val json = jsonArray.getJSONObject(i)
-                        json.getDouble("x")
 
-                        //x coordinate
-                        json.getDouble("y")
+                        val x = json.getDouble("x")
+                        val y = json.getDouble("y")
+                        val theta = json.getDouble("theta")
+                        val name = json.getString("name")
 
-                        //y coordinate
-                        json.getDouble("theta")
-
-                        //z coordinate
-                        json.getString("name")
-
-                        //position name
+                        Log.d(
+                            "MapManager",
+                            "Place: $name  x=$x  y=$y  theta=$theta"
+                        )
                     }
                 } catch (e: JSONException) {
                     e.printStackTrace()
