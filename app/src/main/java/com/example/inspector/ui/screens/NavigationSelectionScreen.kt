@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.inspector.Routes
-import com.example.inspector.normalNavigate
+import com.example.inspector.navigateObstacleDistance
 
 @Composable
 fun NavigationSelectionScreen(
@@ -28,6 +28,7 @@ fun NavigationSelectionScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
+            enabled = robotConnected,
             onClick = { navigatingToStartPoint(navController) },
             modifier = Modifier.height(68.dp)
         ){
@@ -35,6 +36,7 @@ fun NavigationSelectionScreen(
         }
         Spacer(modifier = Modifier.padding(10.dp))
         Button(
+            enabled = robotConnected,
             onClick = { navigatingToEndPoint(navController) },
             modifier = Modifier.height(68.dp)
         ){
@@ -42,6 +44,7 @@ fun NavigationSelectionScreen(
         }
         Spacer(modifier = Modifier.padding(10.dp))
         Button(
+            enabled = robotConnected,
             onClick = { navigatingToChargingStation(navController) },
             modifier = Modifier.height(68.dp)
         ){
@@ -53,16 +56,16 @@ fun NavigationSelectionScreen(
 
 // θέλει update όταν προσθέσουμε τα σημεία του χάρτη και αυτό γιατί να μπορεί να κρίνει το ρομπότ προς τα που θα πάει - NOT Completed
 fun navigatingToStartPoint(navController: NavHostController){
-    normalNavigate("Reception Point")
+    navigateObstacleDistance("Reception Point")
     navController.navigate(Routes.NavigationStatusScreen.route)
 }
 
 fun navigatingToEndPoint(navController: NavHostController){
-    normalNavigate("Αναμονή")
+    navigateObstacleDistance("Αναμονή")
     navController.navigate(Routes.NavigationStatusScreen.route)
 }
 
 fun navigatingToChargingStation(navController: NavHostController){
-    normalNavigate("Charging Point")
+    navigateObstacleDistance("Charging Point")
     navController.navigate(Routes.NavigationStatusScreen.route)
 }

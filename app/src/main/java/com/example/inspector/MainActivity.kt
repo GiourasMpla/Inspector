@@ -68,7 +68,7 @@ fun ScreenMain(
         }
 
         composable(Routes.NavigationSelectionScreen.route){
-            NavigationSelectionScreen(navController = navController)
+            NavigationSelectionScreen(navController = navController , robotConnected = robotConnected, sdkStatus = sdkStatus)
         }
 
         composable(Routes.NavigationStatusScreen.route){
