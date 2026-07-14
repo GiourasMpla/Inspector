@@ -1,6 +1,9 @@
 package com.example.inspector
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.ainirobot.coreservice.client.Definition
 import com.ainirobot.coreservice.client.RobotApi
 import com.ainirobot.coreservice.client.listener.CommandListener
@@ -8,33 +11,45 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
+data class MapPlace(
+    val name: String,
+    val x: Double,
+    val y: Double,
+    val theta: Double
+)
+
 object MapManager {
+    var places by mutableStateOf<List<MapPlace>>(emptyList())
+
     fun getPlaceList() {
         var currentReqId = reqIdCounter++
-        Log.d("MapManager", "Returned places reqId=$currentReqId connected=$isRobotServerConnected")
+        Log.d("MapManager", "Fetching places reqId=$currentReqId connected=$isRobotServerConnected")
         RobotApi.getInstance().getPlaceList(currentReqId, object : CommandListener() {
             override fun onResult(result: Int, message: String?) {
                 try {
                     val jsonArray = JSONArray(message)
                     val length = jsonArray.length()
-                    for (i in 0..<length) {
+                    val placesList = mutableListOf<MapPlace>()
+
+                    for (i in 0 until length) {
                         val json = jsonArray.getJSONObject(i)
-                        json.getDouble("x")
+                        val x = json.getDouble("x")
+                        val y = json.getDouble("y")
+                        val theta = json.getDouble("theta")
+                        val name = json.getString("name")
 
-                        //x coordinate
-                        json.getDouble("y")
-
-                        //y coordinate
-                        json.getDouble("theta")
-
-                        //z coordinate
-                        json.getString("name")
-
-                        //position name
+                        placesList.add(MapPlace(name, x, y, theta))
+                        Log.d("MapManager", "Place $name: x=$x, y=$y, theta=$theta")
                     }
+
+                    // Store the places in state for UI access
+                    places = placesList
+                    Log.d("MapManager", "Successfully loaded ${placesList.size} places")
                 } catch (e: JSONException) {
+                    Log.e("MapManager", "JSON parsing error: ${e.message}")
                     e.printStackTrace()
                 } catch (e: NullPointerException) {
+                    Log.e("MapManager", "Null pointer error: ${e.message}")
                     e.printStackTrace()
                 }
             }

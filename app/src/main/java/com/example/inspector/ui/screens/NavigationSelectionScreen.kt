@@ -53,16 +53,16 @@ fun NavigationSelectionScreen(
 
 // θέλει update όταν προσθέσουμε τα σημεία του χάρτη και αυτό γιατί να μπορεί να κρίνει το ρομπότ προς τα που θα πάει - NOT Completed
 fun navigatingToStartPoint(navController: NavHostController){
-    normalNavigate("Start Point")
+    normalNavigate("Reception Point")
     navController.navigate(Routes.NavigationStatusScreen.route)
 }
 
 fun navigatingToEndPoint(navController: NavHostController){
-    normalNavigate("End Point")
+    normalNavigate("Αναμονή")
     navController.navigate(Routes.NavigationStatusScreen.route)
 }
 
 fun navigatingToChargingStation(navController: NavHostController){
-    normalNavigate("Charging Station")
+    normalNavigate("Charging Point")
     navController.navigate(Routes.NavigationStatusScreen.route)
 }
