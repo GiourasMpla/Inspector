@@ -45,7 +45,10 @@ class MainActivity : ComponentActivity() {
         )
         setContent {
             InspectorTheme {
-                ScreenMain()
+                ScreenMain(
+                    robotConnected = robotConnected,
+                    sdkStatus = sdkStatus
+                )
             }
         }
     }
@@ -54,9 +57,9 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun ScreenMain(
-
+    robotConnected: Boolean = true,
+    sdkStatus: String = "Preview"
 ){
-
     val navController = rememberNavController()
     NavHost(navController = navController,
         startDestination = Routes.StartingScreen.route){
@@ -65,7 +68,7 @@ fun ScreenMain(
         }
 
         composable(Routes.NavigationSelectionScreen.route){
-            NavigationSelectionScreen(navController = navController)
+            NavigationSelectionScreen(navController = navController , robotConnected = robotConnected, sdkStatus = sdkStatus)
         }
 
         composable(Routes.NavigationStatusScreen.route){

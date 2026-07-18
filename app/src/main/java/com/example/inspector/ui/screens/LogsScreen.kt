@@ -27,12 +27,6 @@ fun LogsScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(
-            onClick = { stopNavigation() },
-            modifier = Modifier.height(68.dp)
-        ){
-            Text(text = "Go to Start Point")
-        }
         Text(// to be updated when we have logs
             text = "Logs..."
         )
