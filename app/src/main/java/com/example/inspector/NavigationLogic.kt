@@ -5,7 +5,8 @@ import android.util.Log
 import com.ainirobot.coreservice.client.Definition
 import com.ainirobot.coreservice.client.RobotApi
 import com.ainirobot.coreservice.client.listener.ActionListener
-
+import org.json.JSONObject
+import com.ainirobot.coreservice.client.listener.CommandListener
 
 var navigationListener: ActionListener = object : ActionListener() {
     @Throws(RemoteException::class)
@@ -40,7 +41,30 @@ var navigationListener: ActionListener = object : ActionListener() {
     public override fun onStatusUpdate(status: Int, data: String?, extraData: String?) {
         Log.d("NavigationLogic", "onStatusUpdate status: $status data: $data")
         when (status) {
-            Definition.STATUS_NAVI_AVOID -> Log.i("NavigationLogic", "Status: Avoiding obstacle")
+            Definition.STATUS_NAVI_AVOID -> {
+                Log.i("NavigationLogic", "Status: Avoiding obstacle")
+
+                // Fetch robot position
+                val currentReqId = reqIdCounter++
+                RobotApi.getInstance().getPosition(currentReqId, object : CommandListener() {
+                    override fun onResult(result: Int, message: String?) {
+                        try {
+                            val json = JSONObject(message)
+                            val x = json.getDouble(Definition.JSON_NAVI_POSITION_X)
+                            val y = json.getDouble(Definition.JSON_NAVI_POSITION_Y)
+                            val theta = json.getDouble(Definition.JSON_NAVI_POSITION_THETA)
+
+                            // Log obstacle
+                            ObstacleManager.addObstacle(x, y, theta)
+                            Log.d("NavigationLogic", "Obstacle logged at x=$x y=$y theta=$theta")
+
+                        } catch (e: Exception) {
+                            Log.e("NavigationLogic", "Error parsing position: ${e.message}")
+                        }
+                    }
+                })
+            }
+
             Definition.STATUS_NAVI_AVOID_END -> Log.i("NavigationLogic", "Status: Obstacle avoidance ended")
             Definition.STATUS_START_NAVIGATION -> Log.i("NavigationLogic", "Status: Navigation started")
             Definition.STATUS_START_CRUISE -> Log.i("NavigationLogic", "Status: Cruise started")
@@ -55,11 +79,11 @@ var navigationListener: ActionListener = object : ActionListener() {
 }
 
 var reqIdCounter = 0
-var coordinateDeviation = 0.5 
+var coordinateDeviation = 1.0
 var obstacleDistance = 0.3  // Reduced from 0.75 to allow narrow passages
-var time = 1200L             // Increased from 60L to prevent early timeout
-var linearSpeed = 0.7 
-var angularSpeed = 0.45 
+var time = 5000L             // Increased from 60L to prevent early timeout
+var linearSpeed = 0.7
+var angularSpeed = 1.2
 
 // Updated normalNavigate to use obstacleDistance and the new timeout
 fun normalNavigate(destName: String){
@@ -84,7 +108,16 @@ fun customNavigation(destName: String){
 fun customNavigationObstacleDistance(destName: String){
     var currentReqId = reqIdCounter++
     Log.d("MoveLogic", "Custom navigation with obstacle distance to '$destName' reqId=$currentReqId connected=$isRobotServerConnected")
-    RobotApi.getInstance().startNavigation(currentReqId, destName, coordinateDeviation, obstacleDistance, time, linearSpeed, angularSpeed, navigationListener);
+
+    RobotApi.getInstance().startNavigation(currentReqId,
+        destName,
+        coordinateDeviation,
+        obstacleDistance,
+        time,
+        linearSpeed,
+        angularSpeed,
+        navigationListener
+    );
 }
 
 fun stopNavigation(){

@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.inspector.Routes
-import com.example.inspector.navigateObstacleDistance
+import com.example.inspector.customNavigationObstacleDistance
 
 @Composable
 fun NavigationSelectionScreen(
@@ -56,16 +56,16 @@ fun NavigationSelectionScreen(
 
 // θέλει update όταν προσθέσουμε τα σημεία του χάρτη και αυτό γιατί να μπορεί να κρίνει το ρομπότ προς τα που θα πάει - NOT Completed
 fun navigatingToStartPoint(navController: NavHostController){
-    navigateObstacleDistance("Reception Point")
+    customNavigationObstacleDistance("Reception Point")
     navController.navigate(Routes.NavigationStatusScreen.route)
 }
 
 fun navigatingToEndPoint(navController: NavHostController){
-    navigateObstacleDistance("Αναμονή")
+    customNavigationObstacleDistance("Αναμονή")
     navController.navigate(Routes.NavigationStatusScreen.route)
 }
 
 fun navigatingToChargingStation(navController: NavHostController){
-    navigateObstacleDistance("Charging Point")
+    customNavigationObstacleDistance("Charging Point")
     navController.navigate(Routes.NavigationStatusScreen.route)
 }
