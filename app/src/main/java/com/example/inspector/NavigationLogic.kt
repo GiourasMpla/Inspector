@@ -42,6 +42,8 @@ var navigationListener: ActionListener = object : ActionListener() {
         Log.d("NavigationLogic", "onStatusUpdate status: $status data: $data")
         when (status) {
             Definition.STATUS_NAVI_AVOID -> {
+                RobotLogManager.addLog("NavigationLogic", "Status: Avoiding obstacle!")
+                fetchAndLogPosition()
                 Log.i("NavigationLogic", "Status: Avoiding obstacle")
 
                 // Fetch robot position
@@ -78,10 +80,32 @@ var navigationListener: ActionListener = object : ActionListener() {
     }
 }
 
+private fun fetchAndLogPosition() {
+    val currentReqId = reqIdCounter++
+    RobotApi.getInstance().getPosition(currentReqId, object : CommandListener() {
+        override fun onResult(result: Int, message: String?) {
+            try {
+                val json = JSONObject(message)
+                val x = json.optDouble(Definition.JSON_NAVI_POSITION_X)
+                val y = json.optDouble(Definition.JSON_NAVI_POSITION_Y)
+
+                val posMsg = "Current Position: x=$x, y=$y"
+                RobotLogManager.addLog("NavigationLogic", posMsg)
+
+                // Also update your ObstacleManager
+                val theta = json.optDouble(Definition.JSON_NAVI_POSITION_THETA)
+                ObstacleManager.addObstacle(x, y, theta)
+            } catch (e: Exception) {
+                RobotLogManager.addLog("NavigationLogic", "Position Error: ${e.message}")
+            }
+        }
+    })
+}
+
 var reqIdCounter = 0
 var coordinateDeviation = 1.0
 var obstacleDistance = 0.3  // Reduced from 0.75 to allow narrow passages
-var time = 5000L             // Increased from 60L to prevent early timeout
+var time = 60000L             // Increased from 60L to prevent early timeout
 var linearSpeed = 0.7
 var angularSpeed = 1.2
 
