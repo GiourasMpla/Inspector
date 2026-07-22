@@ -85,26 +85,6 @@ var time = 5000L             // Increased from 60L to prevent early timeout
 var linearSpeed = 0.7
 var angularSpeed = 1.2
 
-// Updated normalNavigate to use obstacleDistance and the new timeout
-fun normalNavigate(destName: String){
-    var currentReqId = reqIdCounter++
-    Log.d("MoveLogic", "Normal navigation to '$destName' reqId=$currentReqId connected=$isRobotServerConnected")
-    // Passing obstacleDistance explicitly helps the robot navigate tighter spaces
-    RobotApi.getInstance().startNavigation(currentReqId, destName, coordinateDeviation, time, navigationListener);
-}
-
-fun navigateObstacleDistance(destName: String){
-    var currentReqId = reqIdCounter++
-    Log.d("MoveLogic", "Navigation with obstacle distance to '$destName' reqId=$currentReqId connected=$isRobotServerConnected")
-    RobotApi.getInstance().startNavigation(currentReqId, destName, coordinateDeviation, obstacleDistance, time, navigationListener);
-}
-
-fun customNavigation(destName: String){
-    var currentReqId = reqIdCounter++
-    Log.d("MoveLogic", "Custom navigation to '$destName' reqId=$currentReqId connected=$isRobotServerConnected")
-    RobotApi.getInstance().startNavigation(currentReqId, destName, coordinateDeviation, time, linearSpeed, angularSpeed, navigationListener);
-}
-
 fun customNavigationObstacleDistance(destName: String){
     var currentReqId = reqIdCounter++
     Log.d("MoveLogic", "Custom navigation with obstacle distance to '$destName' reqId=$currentReqId connected=$isRobotServerConnected")

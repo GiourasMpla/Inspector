@@ -16,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.inspector.ObstacleManager
-import com.example.inspector.ObstacleManager.obstacles
 import com.example.inspector.Routes
 import java.util.Date
+
 
 @Composable
 fun LogsScreen(
@@ -33,7 +33,7 @@ fun LogsScreen(
     ) {
         val obstacles = ObstacleManager.obstacles
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(16.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
             items(obstacles) { obs ->
                 Text("Obstacle at x=${obs.x}, y=${obs.y}, θ=${obs.theta}")

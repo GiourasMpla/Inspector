@@ -34,7 +34,7 @@ fun NavigationStatusScreen(
             Text(text = "Stop navigation")
         }
         Text(//to be updated when the robot navigates
-            text = "Navigating to Reception Point"
+            text = "Navigating to ..."
         )
         Spacer(modifier = Modifier.padding(10.dp))
         Button(
