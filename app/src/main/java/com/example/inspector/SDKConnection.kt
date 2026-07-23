@@ -55,6 +55,8 @@ fun connectToRobotServer(
             // Server is connected, set the callback for receiving requests, including voice commands, system events, etc.
             RobotApi.getInstance().setCallback(ModuleCallback())
             onConnected()
+
+            ObstacleManager.startPoseListener()
         }
 
         override fun handleApiDisconnected() {
