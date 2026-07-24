@@ -27,25 +27,32 @@ fun LogsScreen(
     navController: NavHostController
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        // Draw map + obstacles
+        MapWithObstacles()
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // List of obstacles
         val obstacles = ObstacleManager.obstacles
-        LazyColumn(
-            modifier = Modifier.padding(16.dp)
-        ) {
+        LazyColumn {
             items(obstacles) { obs ->
                 Text("Obstacle at x=${obs.x}, y=${obs.y}, θ=${obs.theta}")
                 Text("Time: ${Date(obs.timestamp)}")
                 Spacer(modifier = Modifier.height(12.dp))
             }
         }
-        Spacer(modifier = Modifier.padding(10.dp))
+
+        Spacer(modifier = Modifier.height(20.dp))
+
         Button(
             onClick = { navController.navigate(Routes.StartingScreen.route) },
             modifier = Modifier.height(68.dp)
-        ){
+        ) {
             Text(text = "Return to starting screen")
         }
     }
