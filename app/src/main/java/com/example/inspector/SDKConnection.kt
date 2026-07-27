@@ -5,6 +5,8 @@ import android.util.Log
 import com.ainirobot.coreservice.client.ApiListener
 import com.ainirobot.coreservice.client.RobotApi
 import com.ainirobot.coreservice.client.module.ModuleCallbackApi
+import com.ainirobot.coreservice.client.listener.CommandListener
+import org.json.JSONArray
 
 class ModuleCallback : ModuleCallbackApi() {
     @Throws(RemoteException::class)
@@ -57,6 +59,8 @@ fun connectToRobotServer(
             onConnected()
 
             ObstacleManager.startPoseListener()
+            MqttManager.connect(context)
+            loadSavedLocations()
         }
 
         override fun handleApiDisconnected() {
@@ -66,3 +70,29 @@ fun connectToRobotServer(
         }
     })
 }
+
+fun loadSavedLocations() {
+    val reqId = 9999
+    RobotApi.getInstance().getPlaceList(reqId, object : CommandListener() {
+        override fun onResult(result: Int, message: String?) {
+            try {
+                val arr = JSONArray(message)
+                val list = mutableListOf<SavedLocation>()
+
+                for (i in 0 until arr.length()) {
+                    val obj = arr.getJSONObject(i)
+                    val name = obj.getString("name")
+                    val x = obj.getDouble("x")
+                    val y = obj.getDouble("y")
+                    list.add(SavedLocation(name, x, y))
+                }
+
+                ObstacleManager.updateSavedLocations(list)
+
+            } catch (e: Exception) {
+                Log.e("SDKConnection", "Error loading saved locations: ${e.message}")
+            }
+        }
+    })
+}
+
