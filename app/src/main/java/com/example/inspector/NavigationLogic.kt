@@ -68,7 +68,10 @@ var navigationListener: ActionListener = object : ActionListener() {
             }
 
             Definition.STATUS_NAVI_AVOID_END -> Log.i("NavigationLogic", "Status: Obstacle avoidance ended")
-            Definition.STATUS_START_NAVIGATION -> Log.i("NavigationLogic", "Status: Navigation started")
+            Definition.STATUS_START_NAVIGATION -> {
+                Log.i("NavigationLogic", "Status: Navigation started")
+                ObstacleManager.startPoseListener()   // ← MOVE IT HERE
+            }
             Definition.STATUS_START_CRUISE -> Log.i("NavigationLogic", "Status: Cruise started")
             Definition.STATUS_NAVI_OUT_MAP -> Log.w("NavigationLogic", "Status: Robot out of map")
             Definition.STATUS_NAVI_MULTI_ROBOT_WAITING -> Log.i("NavigationLogic", "Status: Waiting for other robot")
