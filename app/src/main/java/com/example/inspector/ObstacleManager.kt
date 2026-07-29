@@ -31,10 +31,12 @@ object ObstacleManager {
     }
 
     fun startPoseListener() {
+        Log.d("PoseListener", "startPoseListener() called")
         RobotApi.getInstance().registerStatusListener(
             Definition.STATUS_POSE,
             object : StatusListener() {
                 override fun onStatusUpdate(type: String, value: String) {
+                    Log.d("PoseListener", "onStatusUpdate() fired. type=$type value=$value")
                     try {
                         val json = JSONObject(value)
                         val px = json.optDouble("px")
@@ -42,14 +44,22 @@ object ObstacleManager {
                         val theta = json.optDouble("theta")
                         val status = json.optInt("status")
 
+                        Log.d(
+                            "PoseListener",
+                            "Parsed pose: px=$px py=$py theta=$theta status=$status"
+                        )
+
 
                         // OBSTACLE = 2
                         if (status == 2) {
+                            Log.d("PoseListener", "Status==2, adding obstacle")
                             addObstacle(px, py, theta)
                             RobotLogManager.addLog(
                                 "PoseListener",
                                 "Obstacle detected at x=$px, y=$py"
                             )
+                        }else{
+                            Log.d("PoseListener", "Status != 2, ignoring")
                         }
 
                     } catch (e: Exception) {
@@ -58,5 +68,6 @@ object ObstacleManager {
                 }
             }
         )
+        Log.d("PoseListener", "registerStatusListener(STATUS_POSE) called with STATUS_POSE=${Definition.STATUS_POSE}")
     }
 }
