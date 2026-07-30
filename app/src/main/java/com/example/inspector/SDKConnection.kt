@@ -58,7 +58,6 @@ fun connectToRobotServer(
             RobotApi.getInstance().setCallback(ModuleCallback())
             onConnected()
 
-            ObstacleManager.startPoseListener()
             MqttManager.connect(context)
             loadSavedLocations()
         }

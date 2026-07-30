@@ -39,7 +39,7 @@ object MapManager {
                         val name = json.getString("name")
 
                         placesList.add(MapPlace(name, x, y, theta))
-                        //Log.d("MapManager", "Place $name: x=$x, y=$y, theta=$theta")
+                        Log.d("MapManager", "Place $name: x=$x, y=$y, theta=$theta")
                     }
 
                     // Store the places in state for UI access

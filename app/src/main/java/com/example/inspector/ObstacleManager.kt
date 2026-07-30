@@ -69,35 +69,4 @@ object ObstacleManager {
 
         return bestName
     }
-
-
-    fun startPoseListener() {
-        RobotApi.getInstance().registerStatusListener(
-            Definition.STATUS_POSE,
-            object : StatusListener() {
-                override fun onStatusUpdate(type: String, value: String) {
-                    try {
-                        val json = JSONObject(value)
-                        val px = json.optDouble("px")
-                        val py = json.optDouble("py")
-                        val theta = json.optDouble("theta")
-                        val status = json.optInt("status")
-
-
-                        // OBSTACLE = 2
-                        if (status == 2) {
-                            addObstacle(px, py, theta)
-                            RobotLogManager.addLog(
-                                "PoseListener",
-                                "Obstacle detected at x=$px, y=$py"
-                            )
-                        }
-
-                    } catch (e: Exception) {
-                        Log.e("PoseListener", "Pose parse error: ${e.message}")
-                    }
-                }
-            }
-        )
-    }
 }

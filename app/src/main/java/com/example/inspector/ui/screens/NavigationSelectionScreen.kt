@@ -61,7 +61,7 @@ fun navigatingToStartPoint(navController: NavHostController){
 }
 
 fun navigatingToEndPoint(navController: NavHostController){
-    customNavigationObstacleDistance("Αναμονή")
+    customNavigationObstacleDistance("STYLISH")
     navController.navigate(Routes.NavigationStatusScreen.route)
 }
 
