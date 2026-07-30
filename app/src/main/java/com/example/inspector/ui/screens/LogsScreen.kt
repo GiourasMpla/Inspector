@@ -33,11 +33,11 @@ fun LogsScreen(
     ) {
         val obstacles = ObstacleManager.obstacles
         LazyColumn(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp).weight(1f)
         ) {
             items(obstacles) { obs ->
+                Text("Obstacle near ${ObstacleManager.nearestLocation(obs.x, obs.y)}")
                 Text("Obstacle at x=${obs.x}, y=${obs.y}, θ=${obs.theta}")
-                Text("Time: ${Date(obs.timestamp)}")
                 Spacer(modifier = Modifier.height(12.dp))
             }
         }
