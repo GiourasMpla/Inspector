@@ -1,38 +1,37 @@
 package com.example.inspector
 
-import android.content.Context
 import android.util.Log
-import org.eclipse.paho.android.service.MqttAndroidClient
-import org.eclipse.paho.client.mqttv3.IMqttActionListener
-import org.eclipse.paho.client.mqttv3.IMqttToken
-import org.eclipse.paho.client.mqttv3.MqttMessage
+import com.hivemq.client.mqtt.MqttClient
+import com.hivemq.client.mqtt.datatypes.MqttQos
 import org.json.JSONObject
+import kotlin.concurrent.thread
 
 object MqttManager {
 
-    private const val BROKER_URL = "tcp://192.168.1.60:1883"
+    private const val BROKER_IP = "broker.hivemq.com"
     private const val TOPIC = "robot/obstacles"
 
-    private var client: MqttAndroidClient? = null
+    private val client = MqttClient.builder()
+        .useMqttVersion3()
+        .serverHost(BROKER_IP)
+        .serverPort(1883)
+        .identifier("nova_robot_client")
+        .buildAsync()
 
-    fun connect(context: Context) {
-        if (client != null && client!!.isConnected) return
-
-        client = MqttAndroidClient(context, BROKER_URL, "nova_robot_client")
-
-        try {
-            val token: IMqttToken = client!!.connect()
-            token.actionCallback = object : IMqttActionListener {
-                override fun onSuccess(asyncActionToken: IMqttToken?) {
-                    Log.d("MqttManager", "Connected to MQTT broker")
-                }
-
-                override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                    Log.e("MqttManager", "Failed to connect to MQTT: ${exception?.message}")
-                }
+    fun connect() {
+        thread(isDaemon = true, name = "MQTT-Connect") {
+            try {
+                client.connect()
+                    .whenComplete { _, error ->
+                        if (error != null) {
+                            Log.e("MqttManager", "Failed to connect to MQTT: ${error.message}")
+                        } else {
+                            Log.d("MqttManager", "Connected to MQTT broker")
+                        }
+                    }
+            } catch (e: Exception) {
+                Log.e("MqttManager", "MQTT connect error: ${e.message}")
             }
-        } catch (e: Exception) {
-            Log.e("MqttManager", "MQTT connect error: ${e.message}")
         }
     }
 
@@ -46,11 +45,18 @@ object MqttManager {
                 put("near", near)
             }
 
-            val message = MqttMessage(json.toString().toByteArray())
-            message.qos = 0
-
-            client?.publish(TOPIC, message)
-            Log.d("MqttManager", "Published obstacle: $json")
+            client.publishWith()
+                .topic(TOPIC)
+                .qos(MqttQos.AT_MOST_ONCE)
+                .payload(json.toString().toByteArray())
+                .send()
+                .whenComplete { _, error ->
+                    if (error != null) {
+                        Log.e("MqttManager", "MQTT publish error: ${error.message}")
+                    } else {
+                        Log.d("MqttManager", "Published obstacle: $json")
+                    }
+                }
 
         } catch (e: Exception) {
             Log.e("MqttManager", "MQTT publish error: ${e.message}")

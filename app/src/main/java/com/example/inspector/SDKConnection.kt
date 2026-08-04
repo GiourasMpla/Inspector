@@ -58,7 +58,7 @@ fun connectToRobotServer(
             RobotApi.getInstance().setCallback(ModuleCallback())
             onConnected()
 
-            MqttManager.connect(context)
+            MqttManager.connect()
             loadSavedLocations()
         }
 
