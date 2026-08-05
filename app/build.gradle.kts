@@ -6,14 +6,12 @@ plugins {
 
 android {
     namespace = "com.example.inspector"
-    compileSdk {
-        version = release(37)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.inspector"
         minSdk = 26
-        targetSdk = 37
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -38,6 +36,13 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    // Packaging options: exclude duplicate META-INF entries coming from Netty jars
+    packaging {
+        resources {
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/io.netty.versions.properties"
+        }
     }
 }
 
