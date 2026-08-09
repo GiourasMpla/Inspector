@@ -33,14 +33,22 @@ fun NavigationStatusScreen(
         ){
             Text(text = "Stop navigation")
         }
-        Text(//to be updated when the robot navigates
-            text = "Navigating to ..."
-        )
+        when (placeCount) {
+            1 -> {
+                Text(text = "Navigating to Start Point")
+            }
+            2 -> {
+                Text(text = "Navigating to End Point")
+            }
+            3 -> {
+                Text(text = "Navigating to Charging Station")
+            }
+        }
         Spacer(modifier = Modifier.padding(10.dp))
         Button(
             onClick = { navController.navigate(Routes.StartingScreen.route) },
             modifier = Modifier.height(68.dp)
-        ){
+        ) {
             Text(text = "Return to Starting screen")
         }
     }

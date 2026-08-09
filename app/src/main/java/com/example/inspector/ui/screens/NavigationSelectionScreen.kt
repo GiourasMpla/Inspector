@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import com.example.inspector.Routes
 import com.example.inspector.customNavigationObstacleDistance
 
+var placeCount = 0 ;
 @Composable
 fun NavigationSelectionScreen(
     robotConnected: Boolean = true,
@@ -58,14 +59,17 @@ fun NavigationSelectionScreen(
 fun navigatingToStartPoint(navController: NavHostController){
     customNavigationObstacleDistance("Reception Point")
     navController.navigate(Routes.NavigationStatusScreen.route)
+    placeCount = 1
 }
 
 fun navigatingToEndPoint(navController: NavHostController){
     customNavigationObstacleDistance("STYLISH")
     navController.navigate(Routes.NavigationStatusScreen.route)
+    placeCount = 2
 }
 
 fun navigatingToChargingStation(navController: NavHostController){
     customNavigationObstacleDistance("Charging Point")
     navController.navigate(Routes.NavigationStatusScreen.route)
+    placeCount = 3
 }
